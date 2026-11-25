@@ -507,6 +507,82 @@ body::-webkit-scrollbar-track {
 .content {
     transition: opacity 0.25s;
 }
+html {
+    scroll-behavior: smooth;
+}
+.article .content h1,
+.article .content h2,
+.article .content h3,
+.article .content h4 {
+    scroll-margin-top: 76px;
+}
+.article .content > p {
+    text-indent: 2em;
+}
+.article .content > p:has(> img:only-child) {
+    text-indent: 0;
+}
+#post-toc {
+    display: none;
+}
+@media (min-width: 1240px) {
+    #post-toc {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(6px);
+        border: 1px solid #e6edf5;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+        display: block;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+        padding: 14px 14px 12px;
+        position: fixed;
+        right: max(16px, calc((100vw - 900px) / 2 - 252px));
+        top: 92px;
+        width: 224px;
+        z-index: 20;
+    }
+    #post-toc .post-toc-title {
+        border-bottom: 1px solid #edf2f7;
+        color: #1e3e3f;
+        font-size: 13.5px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+    }
+    #post-toc .post-toc-body ol,
+    #post-toc .post-toc-body ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    #post-toc .post-toc-body .toc-child {
+        padding-left: 12px;
+    }
+    #post-toc .post-toc-body li {
+        margin: 2px 0;
+    }
+    #post-toc .post-toc-body a.toc-link {
+        border-left: 2px solid transparent;
+        border-radius: 0 6px 6px 0;
+        color: #5c6b72;
+        display: block;
+        font-size: 12.5px;
+        line-height: 1.45;
+        padding: 4px 8px;
+        transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    }
+    #post-toc .post-toc-body a.toc-link:hover {
+        background: #f0f7ff;
+        color: #3b82f6;
+    }
+    #post-toc .post-toc-body a.toc-link.active {
+        background: #eef6ff;
+        border-left-color: #66afef;
+        color: #2563eb;
+        font-weight: 600;
+    }
+}
 .content img,
 .content video,
 .content audio,
