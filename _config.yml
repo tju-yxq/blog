@@ -3,7 +3,7 @@ title: "xdz' blog"
 subtitle: 'AI Infra & Systems Notes'
 description: 'LLM 推理基础设施、KV Cache 显存管理与系统实测记录'
 keywords: 'AI Infra, LLM, vLLM, KV Cache, Hybrid Attention'
-author: 喻新强
+author: 小段子
 language: zh-CN
 timezone: 'Asia/Shanghai'
 
