@@ -45,6 +45,11 @@ card:
         name: github
         theme: brands
       link: https://github.com/tju-yxq
+    Email:
+      icon:
+        name: envelope
+        theme: solid
+      link: mailto:2651701064@qq.com
   friendLinks:
     "xdz' wiki": https://tju-yxq.github.io/wiki/
 
