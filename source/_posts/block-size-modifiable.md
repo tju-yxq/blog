@@ -1,6 +1,7 @@
 ---
 title: "混合注意力模型的块大小：能否修改、改了有什么影响"
 date: 2026-11-05 18:00:00
+description: "从 vLLM 源码、上游 RFC/issue、论文与其他推理引擎四条线索核对 --block-size 的可调范围，以及 --prefix-match-unit 对显存与命中的影响。"
 categories:
   - AI Infra
 tags:

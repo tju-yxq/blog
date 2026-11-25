@@ -781,7 +781,14 @@ code,
     font-family: "Fira Code", "Noto Sans SC", monospace;
 }
 table:not(.hljs-ln) {
-    margin: 15px 0;
+    display: table;
+    width: auto;
+    max-width: 100%;
+    margin: 18px auto;
+    border-collapse: collapse;
+    table-layout: auto;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
 }
 table:not(.hljs-ln) td:nth-child(even) {
     background: #c7e0fb4d;
@@ -794,8 +801,12 @@ table:not(.hljs-ln) th {
 }
 table:not(.hljs-ln) tr th,
 table:not(.hljs-ln) tr td {
+    text-align: center !important;
+    vertical-align: middle;
     border-radius: 3px;
-    padding: 10px 20px;
+    padding: 9px 12px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 ul li,
 ol li {

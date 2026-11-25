@@ -1,6 +1,7 @@
 ---
 title: "长上下文注意力图解"
 date: 2026-10-26 18:00:00
+description: "整理 DSA、QSA、MSA、CSA、HCA 五种长上下文与稀疏注意力机制的原理对比，附带独立交互式图解讲义与预算计算器。"
 categories:
   - AI Infra
 tags:
