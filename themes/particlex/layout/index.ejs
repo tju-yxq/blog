@@ -3,7 +3,20 @@
         id="home-background"
         ref="homeBackground"
         data-images="<%- theme.background.map(url_for) %>"
-    ></div>
+    >
+        <% if (theme.backgroundVideo && theme.backgroundVideo.enable) { %>
+        <video
+            id="home-bg-video"
+            src="<%- url_for(theme.backgroundVideo.src) %>"
+            poster="<%- url_for(theme.backgroundVideo.poster) %>"
+            autoplay
+            loop
+            muted
+            playsinline
+            preload="auto"
+        ></video>
+        <% } %>
+    </div>
     <div id="home-info" @click="homeClick">
         <span class="loop"></span>
         <span class="loop"></span>

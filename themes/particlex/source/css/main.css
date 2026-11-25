@@ -167,10 +167,19 @@
     background-size: cover;
     height: 100vh;
     left: 0;
+    overflow: hidden;
     position: absolute;
     top: 0;
     width: 100vw;
     z-index: -1;
+}
+#home-head #home-bg-video {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    width: 100%;
 }
 #home-head #home-info .info {
     align-items: center;

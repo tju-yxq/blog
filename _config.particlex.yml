@@ -2,7 +2,12 @@
 avatar: /images/avatar.jpg
 
 background:
-  - /images/background.jpg
+  - /images/bg-avemujica-poster.jpg
+
+backgroundVideo:
+  enable: true
+  src: /images/bg-avemujica.mp4
+  poster: /images/bg-avemujica-poster.jpg
 
 loading: /images/loading.gif
 
