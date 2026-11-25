@@ -1,0 +1,84 @@
+# ParticleX Theme Configuration
+avatar: /images/avatar.jpg
+
+background:
+  - /images/background.jpg
+
+loading: /images/loading.gif
+
+colors:
+  - "#2f7a63"
+  - "#00bcd4"
+  - "#03a9f4"
+  - "#00a596"
+  - "#ff7d73"
+
+menu:
+  Home:
+    name: house
+    theme: solid
+    link: /
+  About:
+    name: id-card
+    theme: solid
+    link: /about
+  Archives:
+    name: box-archive
+    theme: solid
+    link: /archives
+  Categories:
+    name: bookmark
+    theme: solid
+    link: /categories
+  Tags:
+    name: tags
+    theme: solid
+    link: /tags
+
+card:
+  enable: true
+  description: |
+    天津大学网安学院，关注 AI Infra、LLM 推理系统与 KV Cache 显存管理。
+  iconLinks:
+    GitHub:
+      icon:
+        name: github
+        theme: brands
+      link: https://github.com/tju-yxq
+  friendLinks:
+    "xdz' wiki": https://tju-yxq.github.io/wiki/
+
+footer:
+  since: 2026
+  ICP:
+    enable: false
+    code:
+    link:
+
+polyfill:
+  enable: false
+
+highlight:
+  enable: true
+  style: github
+
+math:
+  enable: true
+
+preview:
+  enable: true
+
+crypto:
+  enable: false
+
+search:
+  enable: true
+
+giscus:
+  enable: false
+gitalk:
+  enable: false
+waline:
+  enable: false
+twikoo:
+  enable: false
