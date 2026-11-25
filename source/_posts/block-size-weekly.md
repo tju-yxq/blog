@@ -13,7 +13,7 @@ tags:
 
 > 状态：**主体已完成**。块大小语义、容量曲线、性能、块内复用、TP 对照、9B 对照均已实测；剩余输出正确性与重复实验。
 > 环境：A800-80GB 单卡，vLLM 0.32.0，bf16，Qwen3.5-2B（默认块 544）/ Qwen3.5-9B（默认块 528）。
-> 第二篇（SWA/Full 模型，Gemma 4）见 [SWA/Full 模型 block size 实测](/blog/posts/block-size-gemma4/)。
+> 第二篇（SWA/Full 模型，Gemma 4）见 [SWA/Full 模型 block size 实测](/posts/block-size-gemma4/)。
 
 ## 一、实验概览
 
@@ -54,7 +54,7 @@ t* = 状态页字节 / 每 token 注意力字节
 
 `--block-size` 在混合模型中用作对齐单位，不直接作为最终生效值。
 
-![传入值与实际生效块大小](/blog/blk/fig_align.png)
+![传入值与实际生效块大小](/blk/fig_align.png)
 
 | 传入 | 实际生效 | 规则 |
 |---:|---:|---|
@@ -97,7 +97,7 @@ t* = 状态页字节 / 每 token 注意力字节
 
 **测量方式**：只启动 server 读启动日志（`Padding mamba page size` / `GPU KV cache size` / `Available KV cache memory`），不跑压测。为加快启动加了 `--enforce-eager`，它不影响这三项日志指标。
 
-![块大小与 padding、容量的关系](/blog/blk/fig_mem14.png)
+![块大小与 padding、容量的关系](/blk/fig_mem14.png)
 
 14 个块大小的扫描（只启动不压测，读启动日志）：
 
@@ -135,7 +135,7 @@ t* = 状态页字节 / 每 token 注意力字节
 
 **为什么 `--max-model-len` 是 4352**：负载 A 是 `4096 + 256 = 4352`。设 4096 时 vLLM 对 200 个请求全部返回 `400 Bad Request`（`completed=0 / failed=200`），bench 结果全 0；改 4352 后 `completed=200 / failed=0`，各块大小之间仍同配置可比。
 
-![块大小与吞吐的关系](/blog/blk/fig_perf.png)
+![块大小与吞吐的关系](/blk/fig_perf.png)
 
 ### 受控口径（`--kv-cache-memory-bytes 32 GiB`，固定字节预算）
 
@@ -200,7 +200,7 @@ t* = 状态页字节 / 每 token 注意力字节
 
 ## 五、块内复用（`--prefix-match-unit`）实测
 
-![粒度与命中率的关系](/blog/blk/fig_unit.png)
+![粒度与命中率的关系](/blk/fig_unit.png)
 
 块固定 544，只改 `--prefix-match-unit`，三种共享前缀长度各跑一遍。参数已确认生效（启动日志 `prefix_match_unit': 16`）。
 

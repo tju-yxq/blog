@@ -104,22 +104,22 @@ $$P=\frac{b_{j^*}\cdot\Lambda}{m_{j^*}}$$
 
 ### 4.1 全注意力 kernel 解码延迟
 
-![kernel：块大小 vs 解码延迟](/blog/img/block-size/kernel_block_size_latency.png)
+![kernel：块大小 vs 解码延迟](/img/block-size/kernel_block_size_latency.png)
 
 - 8 个配置（不同 batch / 上下文长度 / 头数）各自的最优块大小**互不相同**；
 - **32–512 区间内只有 3/8 个配置彼此在 1.10× 以内**；
 - 最差情形：bs≤16 时 **6.32×**，b1-4k@512 时 **7.55×**；
 - **lane padding** 造成的额外开销占 **7.3%**（1.2155–1.3046 ms），这是块大小非 2 的幂引入的直接代价。
 
-![kernel：lane padding](/blog/img/block-size/kernel_lane_padding.png)
+![kernel：lane padding](/img/block-size/kernel_lane_padding.png)
 
 **后端白名单**（源码级核对）：FlashAttention 通用路径要求 16 的倍数，SM90+FP8-KV 固定要 **64**，FA4+head_dim256 固定 64；FlashInfer 只接受 **16/32/64**（Blackwell 才放宽）；XPU 要 64。**528 与 1568 各丢 3 条路径**，最大的 5760 反而全兼容；不合格时 vLLM 会**静默换后端**。
 
-![kernel：后端白名单](/blog/img/block-size/kernel_backend_whitelist.png)
+![kernel：后端白名单](/img/block-size/kernel_backend_whitelist.png)
 
 ### 4.2 KV 传输时延
 
-![传输：块大小 vs 端到端时延](/blog/img/block-size/kv_transfer_latency_vs_blocksize.png)
+![传输：块大小 vs 端到端时延](/img/block-size/kv_transfer_latency_vs_blocksize.png)
 
 128k 上下文、Qwen3.5-9B 类几何（128 KiB/token，总 16 GiB）的完整扫描（单位 ms）：
 
@@ -137,13 +137,13 @@ $$P=\frac{b_{j^*}\cdot\Lambda}{m_{j^*}}$$
 - 瓶颈在**发起侧**：每块批量路径 ~5 ns，逐块独立发起 1.8 µs（CUDA Graph 去 host 派发）/ 75–102 µs（含 host 派发）；
 - 因此**传输与 kernel 同向、偏好大块**，这与前缀复用偏好小块构成直接矛盾。
 
-![传输：冲突区](/blog/img/block-size/kv_transfer_conflict_zone.png)
+![传输：冲突区](/img/block-size/kv_transfer_conflict_zone.png)
 
-![传输：gather 带宽](/blog/img/block-size/kv_gather_bandwidth_vs_blocksize.png)
+![传输：gather 带宽](/img/block-size/kv_gather_bandwidth_vs_blocksize.png)
 
 ### 4.3 前缀缓存复用
 
-![复用：命中率 vs 块大小](/blog/img/block-size/prefix_hit_vs_block_size.png)
+![复用：命中率 vs 块大小](/img/block-size/prefix_hit_vs_block_size.png)
 
 **Mooncake Conversation，8 GB，1200 请求的完整扫描**：
 
@@ -174,23 +174,23 @@ $$P=\frac{b_{j^*}\cdot\Lambda}{m_{j^*}}$$
 
 > **结论**：前缀越长、越集中在块边界上，块大小的边际伤害越小；Conversation 型的共享恰好在 512 边界，528 就整段吃不到。**不能说"528 是通用灾难"**。
 
-![复用：512 vs 528](/blog/img/block-size/prefix_512_vs_528.png)
+![复用：512 vs 528](/img/block-size/prefix_512_vs_528.png)
 
 ### 4.4 容量与尾块碎片
 
-![容量：端到端并发](/blog/img/block-size/e2e_capacity.png)
+![容量：端到端并发](/img/block-size/e2e_capacity.png)
 
 - 块越大，每个驻留请求的**尾块 padding** 越多（平均半个块）：bs=2048 时尾块浪费占真实 token 的 **28.7%**（bs=512 为 1.77%、34.9 MiB/请求）；
 - 8 GB 池、600-token 短请求：并发随块增大从 **95 掉到 55（−42%）**；
 - 三档对象组合下填充率 $\tau$ 分别为 **4.1% / 46.5% / 83.3%**。
 
-![容量：零填充分配器收益](/blog/img/block-size/zeropad_allocator_gain.png)
+![容量：零填充分配器收益](/img/block-size/zeropad_allocator_gain.png)
 
 ### 4.5 四维综合评估（ms/请求）
 
 32k 上下文 + 256 token 输出 + PD 分离 + RDMA 400G：
 
-![合成：四维权衡](/blog/img/block-size/synthesis_tradeoff.png)
+![合成：四维权衡](/img/block-size/synthesis_tradeoff.png)
 
 - 最优点 **bs=256**；
 - 偏离代价：bs=16 **+443.8 ms**、528 **+31.6 ms**、1024 **+38.5 ms**、512 **+14.8 ms**、64 **+11.2 ms**。
@@ -221,7 +221,7 @@ $$P=\frac{b_{j^*}\cdot\Lambda}{m_{j^*}}$$
 
 **但它只消一半**：能消「页被最大对象撑爆」，**消不掉「小奇数对象塞进大页」**（如 21 KiB 卷积状态，奇部 21，整数页体系下怎么取 $\Lambda$ 都除不尽）。后一半必须靠**机制**（子页 slot + kernel 直接寻址），DualPools 的 S2 正是做这一半，且它自认非零成本。
 
-![可行性：lcm 网格](/blog/img/block-size/lcm_feasibility_grid.png)
+![可行性：lcm 网格](/img/block-size/lcm_feasibility_grid.png)
 
 ## 6. 上游证据（九段）
 

@@ -13,7 +13,7 @@ tags:
 
 > 状态：**主体已完成**。块大小可取值、显存代价、端到端 TTFT/TPOT、并发吞吐、注意力内核分布均已实测。
 > 环境：A800-80GB 单卡，vLLM 0.32.0，bf16，`google/gemma-4-26B-A4B-it`。
-> 第二篇汇报，第一篇（混合注意力模型）见 [混合注意力 block size 实测](/blog/posts/block-size-weekly/)。
+> 第二篇汇报，第一篇（混合注意力模型）见 [混合注意力 block size 实测](/posts/block-size-weekly/)。
 
 ## 一、实验概览
 
@@ -99,7 +99,7 @@ tags:
 
 **测量方式**：固定 `--kv-cache-memory-bytes 10GiB`，让每档拿到完全相同的 KV 字节预算，只改块大小，读启动日志。
 
-![容量随块大小下降](/blog/img/g4/fig1_capacity.png)
+![容量随块大小下降](/img/g4/fig1_capacity.png)
 
 | 块大小 | 能装多少 token | 相对 32 |
 |---:|---:|---:|
@@ -124,7 +124,7 @@ tags:
 
 ### CUDA graph 模式（生产口径，输入 4096 / 输出 128）
 
-![TTFT 与 TPOT 随块大小的变化](/blog/img/g4/fig2_e2e.png)
+![TTFT 与 TPOT 随块大小的变化](/img/g4/fig2_e2e.png)
 
 | 块大小 | 并发 1 TTFT | 并发 1 TPOT | 并发 32 吞吐 |
 |---:|---:|---:|---:|
@@ -186,7 +186,7 @@ CUDA graph 把"发射 30 层算子"录制成一次调用，省掉每 token 数�
 
 看起来"块越大吞吐越差"。把 KV 预算提到 20 GiB 再测一遍：
 
-![不同显存预算下的并发吞吐](/blog/img/g4/fig3_budget.png)
+![不同显存预算下的并发吞吐](/img/g4/fig3_budget.png)
 
 | 块大小 | 10 GiB 预算 | 20 GiB 预算 |
 |---:|---:|---:|
@@ -211,7 +211,7 @@ CUDA graph 把"发射 30 层算子"录制成一次调用，省掉每 token 数�
 
 两个坑：引擎必须与 profiler 同进程（设 `VLLM_ENABLE_V1_MULTIPROCESSING=0`），否则抓到空壳；不能把 `reshape_and_cache`（写 KV，不是注意力计算）算进来，混进去会把 p50 拉低一半。
 
-![prefill 与 decode 的注意力内核 CDF](/blog/img/g4/fig4_cdf.png)
+![prefill 与 decode 的注意力内核 CDF](/img/g4/fig4_cdf.png)
 
 | 块大小 | prefill p50 | prefill p99 | decode p50 | decode p99 |
 |---:|---:|---:|---:|---:|

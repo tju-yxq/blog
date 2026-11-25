@@ -14,7 +14,7 @@ tags:
 > 实验状态：并发 16（4 臂）、并发 20（4 臂）已完成；并发 24 完成 1.0B0 单臂探索后停止；并发 18（4 臂）排队等待空闲卡。
 > 运行环境：4 × NVIDIA A800-SXM4-80GB（TP4 + EP，每臂启动前执行独占校验），vLLM（commit `4ba787ec` + exact-stop 结算补丁），`Qwen3.8-Flash-Next-FP8`（172.78 GiB），AgentX 1.0.7（固定 Weka 256K trace，seed 42，APC 开启）。
 > 统计口径：全部 9 个正式臂均满足 `normalization.exact = true` 且 `reconciliation.status = matched`，无估算值或补零项；主吞吐指标采用**全量输出吞吐（含推理 `<think>` 与可见输出，`reasoning_plus_output_tokens_s`）**，同时在表中保留可见输出吞吐作参考。
-> 相关实验记录：[混合注意力 block size 实测](/blog/posts/block-size-weekly/)、[SWA/Full 模型 block size 实测](/blog/posts/block-size-gemma4/)。
+> 相关实验记录：[混合注意力 block size 实测](/posts/block-size-weekly/)、[SWA/Full 模型 block size 实测](/posts/block-size-gemma4/)。
 
 ## 一、实验背景与问题
 
@@ -77,7 +77,7 @@ tags:
 
 图 1 汇总了全部 9 个正式臂的吞吐扩展表现，包含全量输出吞吐（含推理）、相对增益与 1:1 线性参考线的对比、边际转换比，以及 1800 秒内完成请求数与可见输出吞吐（参考口径）。
 
-![多并发 KV 预算扩展吞吐与边际效率分析](/blog/img/qwen38/qwen38_throughput_scaling.png)
+![多并发 KV 预算扩展吞吐与边际效率分析](/img/qwen38/qwen38_throughput_scaling.png)
 
 ### 3.1 跨并发汇总
 
@@ -135,7 +135,7 @@ tags:
 
 图 2 将四个代表臂（`c16-b100`、`c20-b100`、`c20-b130`、`c24-b100`）的 10 秒级引擎日志按 `normalization.json` 的窗口起点对齐到 0–30 分钟，同步呈现 KV 利用率、等待队列深度和累积 Prefix Cache 命中率的演化过程。
 
-![1800 秒压测窗口内部动态时序](/blog/img/qwen38/qwen38_timeseries_dynamics.png)
+![1800 秒压测窗口内部动态时序](/img/qwen38/qwen38_timeseries_dynamics.png)
 
 结合三个子图可以清晰看到窗口内的动态演变：
 
@@ -166,7 +166,7 @@ tags:
 
 图 3 将全 9 臂映射到三个状态变量平面上，直观展示预算扩容推动工作点迁移的轨迹。
 
-![KV 预算影响吞吐的因果机制相图](/blog/img/qwen38/qwen38_mechanism_phase_diagram.png)
+![KV 预算影响吞吐的因果机制相图](/img/qwen38/qwen38_mechanism_phase_diagram.png)
 
 图 3(a) 清楚地标出了并发 16 与并发 20 的本质差别：并发 16 的全部四个点（KV P95 42.2%–58.1%）都落在左侧的 KV 充裕区（< 60%），增加预算只是把工作点进一步向左推，吞吐趋于平台；并发 20 从 `b100`（KV P95 76.5%）起步，正好位于中间的容量受限区（60%–80%），每加 10% 预算都将工作点沿陡峭斜率向左上方拉升，越过并发 16 后到达 `b130`（KV P95 54.8%，559.7 tok/s）才重新跨回充裕区；而 `c24-b100`（KV P95 94.7%）则孤立在右侧的过载退化区（≥ 80%）。图 3(b) 中全部 9 个点沿 Prefix Cache 命中率（54.8% → 91.8%）呈现高度单调的正相关，验证了前缀缓存保留能力是预算转化为吞吐的核心中介变量。
 
@@ -174,7 +174,7 @@ tags:
 
 除了吞吐指标，客户端 `profile_export_aiperf.json` 与服务端 `server_metrics_export.csv` 还记录了全 9 臂的 TTFT（首字延迟）、ITL（令牌间解码延迟）、E2E（端到端请求延迟）与服务端排队延迟（`vllm:request_queue_time_seconds`）。
 
-![首字延迟、解码间隔与服务端排队延迟剖析](/blog/img/qwen38/qwen38_latency_tail_breakdown.png)
+![首字延迟、解码间隔与服务端排队延迟剖析](/img/qwen38/qwen38_latency_tail_breakdown.png)
 
 全 9 臂的延迟分位数明细如下：
 
