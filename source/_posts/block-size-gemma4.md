@@ -1,7 +1,8 @@
 ---
 title: "SWA/Full 模型 block size 实测进展"
 date: 2026-11-25 18:46:44
-description: "以 Gemma 4 26B-A4B（25 层滑窗 + 5 层全局）为对象，实测 block_size 16 到 6144 的可用容量、端到端 TTFT/TPOT、并发吞吐与 2026-11-23 受控注意力算子复测分布。"
+updated: 2026-11-25 18:46:44
+description: "以 Gemma 4（25 层滑窗 + 5 层全局）为对象，测块大小 128 到 6144 的端到端性能、显存代价与注意力内核耗时分布"
 categories:
   - AI Infra
 tags:

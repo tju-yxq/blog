@@ -1,7 +1,8 @@
 ---
 title: "block_size 对混合注意力推理的影响"
 date: 2026-10-29 18:00:00
-description: "分析 vLLM HMA 下混合注意力块大小由统一页推导且不可自由下调的代价，涵盖算子性能、KV 传输、前缀复用与显存尾块四个维度的量化结果。"
+updated: 2026-11-23 02:16:54
+description: "模拟/量化 vLLM HMA 下 block_size 对 kernel、KV 传输、前缀缓存复用与显存尾块的影响，含机制推导、九段上游证据、四维实测与零成本修法"
 categories:
   - AI Infra
 tags:

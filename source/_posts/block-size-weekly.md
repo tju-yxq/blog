@@ -1,7 +1,8 @@
 ---
 title: "混合注意力 block size 实测进展"
 date: 2026-11-09 18:00:00
-description: "在 Qwen3.5-2B/9B 混合注意力模型上，验证默认块大小的反解推导、调大块后的显存容量与吞吐变化、以及块内前缀复用的实际效果。"
+updated: 2026-11-23 02:16:54
+description: "block size 的推导与可改性、改大后的显存与性能差距、块内复用能否替代改块大小；含待补数据占位"
 categories:
   - AI Infra
 tags:

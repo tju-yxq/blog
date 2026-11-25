@@ -1,0 +1,90 @@
+name: Sync from tju-yxq/wiki & Deploy
+
+on:
+  repository_dispatch:
+    types: [wiki-updated]
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  sync_and_build:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - name: Checkout blog
+        uses: actions/checkout@v4
+        with:
+          path: blog
+          fetch-depth: 0
+
+      - name: Checkout wiki
+        uses: actions/checkout@v4
+        with:
+          repository: tju-yxq/wiki
+          path: wiki
+          fetch-depth: 0
+
+      - name: Sync notes and assets from wiki
+        run: python3 blog/scripts/sync_from_wiki.py wiki blog
+
+      - name: Commit & push if changed
+        id: commit
+        working-directory: blog
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes from wiki."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "chore(sync): 自动同步 tju-yxq/wiki 最新笔记与图表"
+            git push origin main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Pages
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies & build Hexo
+        if: steps.commit.outputs.changed == 'true'
+        working-directory: blog
+        run: |
+          npm install --no-audit --no-fund
+          npx hexo generate
+
+      - name: Upload Pages artifact
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: blog/public
+
+  deploy:
+    needs: sync_and_build
+    if: needs.sync_and_build.outputs.changed == 'true'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,7 +1,8 @@
 ---
 title: "Qwen3.8 KV 预算与吞吐实测"
 date: 2026-11-23 16:40:00
-description: "在 AgentX Weka 256K 长上下文负载下，实测 Qwen3.8-Flash-Next-FP8（TP4+EP）每卡 KV cache 预算 1.0B0–1.3B0 在并发 16 / 20 / 24 下的全量输出吞吐、前缀缓存命中率、队列深度与尾延迟。"
+updated: 2026-11-23 16:44:31
+description: "在 AgentX 长上下文负载下，实测 Qwen3.8-Flash-Next-FP8（TP4+EP）每卡 KV cache 预算在 1.0B0 至 1.3B0 区间、并发 16/20/24 条件下的全量输出吞吐、前缀缓存命中率、队列深度与尾延迟表现"
 categories:
   - AI Infra
 tags:
